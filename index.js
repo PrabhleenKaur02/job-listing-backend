@@ -112,6 +112,24 @@ app.post('/addJob', async(req, res) => {
 }
 });
 
+// update jobs
+app.put('/job/update/:id', async(req, res) => {
+    const job = await Jobs.findById(req.params.id);
+
+    if(!job){
+        res.status(400).json({
+            msg: "Job not found"
+        })
+    }
+
+    const updatedJob = await Jobs.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+    });
+
+    res.status(200).json({
+        msg: "Job updated successfully!"
+    })
+})
 
 // delete job route
 app.delete('/job/:id', async(req, res) =>{
@@ -129,11 +147,9 @@ app.delete('/job/:id', async(req, res) =>{
         res.status(500).json({
             msg: "Server error",
             error: err.message
-        })
+        });
     }
-
-   
-})
+});
 
 
 

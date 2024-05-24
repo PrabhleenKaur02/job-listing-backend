@@ -1,38 +1,44 @@
 const express = require ("express");
-const app= express();
-// const router = express.Router();
-const port = process.env.PORT || 5000;
 const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
-const { error } = require("console");
+const authRoutes = require('./routes/auth');
+const protectedRoutes = require('./routes/protectedRoute');
 
+const app= express();
+const port = process.env.PORT || 5000;
+
+// middlewares
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false})); 
 app.use(express.static('public'));
+
+// use routes
+app.use('/auth', authRoutes);
+app.use('/protected', protectedRoutes);
+
+
 
 mongoose.connect("mongodb+srv://kaurprabhleen2002:EGiNeRa7yLhNuZc1@cluster0.ih4d0ql.mongodb.net/jobListings")
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.log('Error connecting with MongoDB'));
 
 // schema
-const jobListing = {
-    title: 'String',
-    type: 'String',
-    location: 'String',
-    description: 'String',
-    salary: 'Number',
+const jobListingSchema = new mongoose.Schema({
+    title: String,
+    type: String,
+    location: String,
+    description: String,
+    salary: Number,
     company: {
-      name: 'String',
-      description: 'String',
-      contactEmail: 'String',
-      contactPhone: 'Number'
+      name: String,
+      description: String,
+      contactEmail: String,
+      contactPhone: Number
     }
-}
+});
 
-const Jobs = mongoose.model("Jobs", jobListing);
-// Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: false}));
+const Jobs = mongoose.model("Jobs", jobListingSchema);
 // app.use(express.static('public'));
 
 app.get('/', (req, res) => {

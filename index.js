@@ -19,7 +19,7 @@ app.use('/protected', protectedRoutes);
 
 
 
-mongoose.connect("mongodb+srv://kaurprabhleen2002:EGiNeRa7yLhNuZc1@cluster0.ih4d0ql.mongodb.net/jobListings")
+mongoose.connect("mongoDB connection string")
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.log('Error connecting with MongoDB'));
 

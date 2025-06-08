@@ -55,16 +55,18 @@ app.get('/jobs', async (req, res) => {
     try {
         const allJobs = await Jobs.find();
 
-        if (allJobs.length === 0) {
-            res.status(200).json({
-                msg: 'Oops! No jobs found'
-            });
-        } else {
-            res.status(200).json({
-                msg: `${allJobs.length} Jobs found`,
-                JobsList: allJobs
-            })
-        };
+        res.status(200).json(allJobs);
+
+        // if (allJobs.length === 0) {
+        //     res.status(200).json({
+        //         msg: 'Oops! No jobs found'
+        //     });
+        // } else {
+        //     res.status(200).json({
+        //         msg: `${allJobs.length} Jobs found`,
+        //         JobsList: allJobs
+        //     })
+        // };
     }
     catch (error) {
         console.error('Error fetching jobs: ', error);

@@ -65,7 +65,7 @@ app.get('/jobs', async (req, res) => {
 });
 
 app.get('/jobs/:id', async(req, res)=>{
-    const jobId = req.params.id
+    const jobId = req.params._id
     try {
         const job = await Jobs.findById(jobId)
         if(!jobId){

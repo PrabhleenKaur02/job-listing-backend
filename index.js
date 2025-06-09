@@ -64,6 +64,24 @@ app.get('/jobs', async (req, res) => {
     }
 });
 
+app.get('/jobs/:id', async(req, res)=>{
+    const jobId = req.params.id
+    try {
+        const job = await Jobs.findById(jobId)
+        if(!jobId){
+            return res.status(404).json({
+                error: "Job not found"
+            })
+        }
+
+        res.status(200).json(job)
+    } catch (error) {
+        res.status(500).json({
+            error: "Server error"
+        })
+    }
+})
+
 // job posting route
 app.post('/addJob', async(req, res) => {
     console.log("REQ BODY", req.body)

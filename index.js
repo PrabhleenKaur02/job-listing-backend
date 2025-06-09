@@ -3,11 +3,12 @@ const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
 const authRoutes = require('./routes/auth');
 const protectedRoutes = require('./routes/protectedRoute');
+const Jobs = require('./models/jobModel')
 const cors = require("cors")
 require('dotenv').config()
 
 const app= express();
-const port = process.env.PORT|| 5000;
+const port = process.env.PORT|| 8000;
 
 // middlewares
 app.use(express.json());
@@ -29,22 +30,7 @@ mongoose.connect(process.env.MONGO_URL)
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.log('Error connecting with MongoDB'));
 
-// schema
-const jobListingSchema = new mongoose.Schema({
-    title: String,
-    type: String,
-    location: String,
-    description: String,
-    salary: Number,
-    company: {
-      name: String,
-      description: String,
-      contactEmail: String,
-      contactPhone: Number
-    }
-});
 
-const Jobs = mongoose.model("Jobs", jobListingSchema);
 // app.use(express.static('public'));
 
 app.get('/', (req, res) => {
@@ -52,21 +38,23 @@ app.get('/', (req, res) => {
   });
 
 app.get('/jobs', async (req, res) => {
+    console.log("first")
     try {
+        console.log("sec")
         const allJobs = await Jobs.find();
 
-        res.status(200).json(allJobs);
+        // res.status(200).json(allJobs);
 
-        // if (allJobs.length === 0) {
-        //     res.status(200).json({
-        //         msg: 'Oops! No jobs found'
-        //     });
-        // } else {
-        //     res.status(200).json({
-        //         msg: `${allJobs.length} Jobs found`,
-        //         JobsList: allJobs
-        //     })
-        // };
+        if (allJobs.length === 0) {
+           return res.status(200).json({
+                msg: 'Oops! No jobs found'
+            });
+        } else {
+            return res.status(200).json({
+                msg: `${allJobs.length} Jobs found`,
+                JobsList: allJobs
+            })
+        };
     }
     catch (error) {
         console.error('Error fetching jobs: ', error);
@@ -78,6 +66,7 @@ app.get('/jobs', async (req, res) => {
 
 // job posting route
 app.post('/addJob', async(req, res) => {
+    console.log("REQ BODY", req.body)
     try {
         const {title, type, location, description, salary, company: {
               name: companyName,
@@ -87,10 +76,8 @@ app.post('/addJob', async(req, res) => {
     } = req.body;
 
         const existingJobs = await Jobs.findOne({
-            where: {
                 title: title,
                 companyName: companyName
-            }
         });
 
         if(existingJobs){
@@ -112,7 +99,7 @@ app.post('/addJob', async(req, res) => {
                    contactPhone
                 }
             });
-            res.send(200).send({
+            res.status(200).send({
                 msg: 'New job added successfully!',
                 data: newJob
             })
@@ -141,7 +128,8 @@ app.put('/job/update/:id', async(req, res) => {
     });
 
     res.status(200).json({
-        msg: "Job updated successfully!"
+        msg: "Job updated successfully!",
+        data: updatedJob
     })
 })
 

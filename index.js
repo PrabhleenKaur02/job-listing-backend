@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false})); 
 app.use(express.static('public'));
 app.use(cors({
-    origin: process.env.VITE_FRONTEND_URL,
+    origin: ['http://localhost:3000', process.env.VITE_FRONTEND_URL],
     credentials: true
 }))
 

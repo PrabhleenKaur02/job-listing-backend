@@ -5,7 +5,9 @@ const Jobs = require('../models/jobModel')
 const getAllJobs = async (req, res) => {
     
     try {
-        const limit = parseInt(req.query._limit) || 0
+        const limitParam = req.query._limit;
+        const limit = limitParam && !isNaN(limitParam) ? parseInt(limitParam) : 0
+        
         const allJobs = await Jobs.find().limit(limit);
 
         // res.status(200).json(allJobs);
@@ -14,12 +16,12 @@ const getAllJobs = async (req, res) => {
            return res.status(200).json({
                 msg: 'Oops! No jobs found'
             });
-        } else {
+        } 
             return res.status(200).json({
                 msg: `${allJobs.length} Jobs found`,
                 JobsList: allJobs
             })
-        };
+        
     }
     catch (error) {
         console.error('Error fetching jobs: ', error);

@@ -8,7 +8,7 @@ router.get('/', getAllJobs);
 
 router.get('/:id', getJobById)
 
-router.post('/addJob', addJob);
+router.post('/', addJob);
 
 router.put('/:id', updateJobById)
 

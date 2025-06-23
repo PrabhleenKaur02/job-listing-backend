@@ -1,14 +1,17 @@
+const mongoose = require("mongoose")
 const Jobs = require('../models/jobModel')
 
 
 // GET jobs
 const getAllJobs = async (req, res) => {
-    
+    console.log('query object: ' , req.query)
     try {
         const limitParam = req.query._limit;
         const limit = limitParam && !isNaN(limitParam) ? parseInt(limitParam) : 0
-        
+
         const allJobs = await Jobs.find().limit(limit);
+        console.log('Limit received:', limit);
+
 
         // res.status(200).json(allJobs);
 
@@ -101,10 +104,15 @@ const addJob = async(req, res) => {
 
 // PUT update jobs
 const updateJobById = async(req, res) => {
-    const job = await Jobs.findById(req.params.id);
+    try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            console.log('params: ', req.params)
+        return res.status(400).json({ msg: 'Invalid Job ID' });
+    }
+        const job = await Jobs.findById(req.params.id);
 
     if(!job){
-        res.status(400).json({
+        return res.status(400).json({
             msg: "Job not found"
         })
     }
@@ -113,14 +121,26 @@ const updateJobById = async(req, res) => {
         new: true,
     });
 
-    res.status(200).json({
+    
+
+    return res.status(200).json({
         msg: "Job updated successfully!",
         data: updatedJob
     })
+        
+    } catch (error) {
+        console.log('Error updating job: ', error.message)
+        return res.status(500).json({
+            msg: "Unable to edit. Server error",
+            error: error.message
+        });
+    }
+    
 }
 
 // DELETE job route
 const deleteJobById = async(req, res) =>{
+    console.log("first")
     try{
         const job = await Jobs.findByIdAndDelete(req.params.id);
         if(!job) {

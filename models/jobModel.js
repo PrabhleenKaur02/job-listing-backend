@@ -9,7 +9,7 @@ const jobListingSchema = new mongoose.Schema({
     type: String,
     location: String,
     description: String,
-    salary: Number,
+    salary: String,
     company: {
       name: {
         type: String,
